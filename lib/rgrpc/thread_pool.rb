@@ -21,5 +21,13 @@ module RGrpc
       @min_pool_size.times { span_thread }
       @auto_trimmer = GrpcKit::RpcDispatcher::AutoTrimmer.new(self, interval: interval)
     end
+
+    def schedule(task, &block)
+      return if task.nil?
+
+      raise "scheduling new task isnn't alloowed during, shutdown!" if @shutdown
+
+      @tasks.push(block || task)
+    end
   end
 end
